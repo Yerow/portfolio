@@ -1,0 +1,142 @@
+---
+const skills = [
+  { name: "Next.js", level: 95 },
+  { name: "React", level: 90 },
+  { name: "TypeScript", level: 85 },
+  { name: "Payload CMS", level: 90 },
+  { name: "Node.js", level: 85 },
+  { name: "PostgreSQL", level: 80 },
+  { name: "Python", level: 75 },
+  { name: "Tailwind CSS", level: 90 },
+  { name: "C / Systems", level: 70 },
+  { name: "Git", level: 85 },
+];
+---
+
+<section id="competences" class="section-padding skills-section">
+  <div class="section-label" data-reveal>Compétences</div>
+  <h2 class="section-title" data-reveal data-reveal-delay="0.1">
+    Ma <span class="accent">stack</span> technique
+  </h2>
+
+  <div class="skills-grid">
+    {skills.map((s, i) => (
+      <div class="skill-item" data-reveal data-reveal-delay={`${0.05 * i}`}>
+        <div class="skill-header">
+          <span class="skill-name">{s.name}</span>
+          <span class="skill-level">{s.level}%</span>
+        </div>
+        <div class="skill-bar">
+          <div
+            class="skill-bar-fill"
+            style={`--skill-level: ${s.level}%;`}
+            data-skill-level={s.level}
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .skills-section {
+    padding: 120px 60px;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 56px;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 60px;
+    max-width: 800px;
+  }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .skill-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .skill-level {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .skill-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent);
+    width: 0%;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .skill-bar-fill.animated {
+    width: var(--skill-level);
+  }
+
+  @media (max-width: 768px) {
+    .skills-section {
+      padding: 60px 24px;
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const skillsSection = document.getElementById("competences")!;
+  const bars = skillsSection.querySelectorAll(".skill-bar-fill");
+
+  const skillObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          bars.forEach((bar, i) => {
+            setTimeout(() => {
+              bar.classList.add("animated");
+            }, i * 100);
+          });
+          skillObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  skillObserver.observe(skillsSection);
+</script>

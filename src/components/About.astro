@@ -1,0 +1,141 @@
+---
+const stats = [
+  { label: "Projets réalisés", value: "10+", icon: "◈" },
+  { label: "Clients satisfaits", value: "5+", icon: "◇" },
+  { label: "Stack principale", value: "Next.js / Astro", icon: "◆" },
+  { label: "Diplôme", value: "Sept. 2025", icon: "◈" },
+];
+---
+
+<section id="propos" class="section-padding about-section">
+  <div class="about-grid">
+    <div class="about-text" data-reveal-left>
+      <div class="section-label">À propos</div>
+      <h2 class="about-title">
+        Un dev qui aime<br />
+        <span class="accent">bien faire</span> les choses
+      </h2>
+      <p class="about-paragraph">
+        Étudiant ingénieur à CPE Lyon, je suis passionné par le web depuis
+        plusieurs années. J'ai eu la chance de travailler sur des projets
+        variés, du site vitrine à la plateforme complexe, en freelance comme en
+        entreprise.
+      </p>
+      <p class="about-paragraph">
+        Mon approche : écouter le besoin, proposer des solutions modernes et
+        robustes, et livrer un produit qui fait vraiment la différence. Je
+        maîtrise toute la chaîne, du design au déploiement.
+      </p>
+    </div>
+
+    <div class="about-stats-wrapper" data-reveal-right data-reveal-delay="0.2">
+      <div class="stats-card">
+        {stats.map((s, i) => (
+          <div class:list={["stat-row", { "stat-row--last": i === stats.length - 1 }]}>
+            <div class="stat-left">
+              <span class="stat-icon">{s.icon}</span>
+              <span class="stat-label">{s.label}</span>
+            </div>
+            <span class="stat-value">{s.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section {
+    padding: 120px 60px;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1100px;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    line-height: 1.15;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  .about-paragraph {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .stats-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .stat-row--last {
+    border-bottom: none;
+  }
+
+  .stat-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  @media (max-width: 768px) {
+    .about-section {
+      padding: 60px 24px;
+    }
+
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

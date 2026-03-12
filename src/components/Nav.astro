@@ -1,0 +1,150 @@
+---
+const navItems = [
+  { label: "Projets", href: "#projets" },
+  { label: "À propos", href: "#propos" },
+  { label: "Compétences", href: "#competences" },
+  { label: "Contact", href: "#contact" },
+];
+---
+
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="accent">M</span>ohamed<span class="accent">.</span>
+  </a>
+  <button class="nav-toggle" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <div class="nav-links">
+    {navItems.map((item) => (
+      <a href={item.href} class="nav-link">{item.label}</a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+  }
+
+  nav.scrolled {
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+  }
+
+  .nav-link {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding: 16px 24px;
+    }
+
+    .nav-toggle {
+      display: flex;
+      z-index: 101;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(10, 10, 15, 0.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-links.open {
+      transform: translateX(0);
+    }
+
+    .nav-link {
+      font-size: 20px;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector("nav")!;
+  const toggle = document.querySelector(".nav-toggle")!;
+  const links = document.querySelector(".nav-links")!;
+
+  window.addEventListener("scroll", () => {
+    nav.classList.toggle("scrolled", window.scrollY > 50);
+  }, { passive: true });
+
+  toggle.addEventListener("click", () => {
+    links.classList.toggle("open");
+  });
+
+  links.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      links.classList.remove("open");
+    });
+  });
+</script>

@@ -1,0 +1,203 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Mohamed — Développeur Web Fullstack",
+  description = "Développeur web fullstack freelance basé à Lyon. Création de sites et applications web modernes avec Next.js, Astro et Payload CMS.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="grain"></div>
+    <slot />
+
+    <style is:global>
+      :root {
+        --bg: #0a0a0f;
+        --surface: #12121a;
+        --accent: #00e5a0;
+        --accent-blue: #7b8cff;
+        --text-primary: #f0f0f5;
+        --text-secondary: #8888a0;
+        --font-display: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      ::selection {
+        background: var(--accent);
+        color: var(--bg);
+      }
+
+      /* Grain overlay */
+      .grain::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        animation: grain 8s steps(10) infinite;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.5;
+      }
+
+      @keyframes grain {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        10% {
+          transform: translate(-5%, -10%);
+        }
+        30% {
+          transform: translate(3%, -15%);
+        }
+        50% {
+          transform: translate(12%, 9%);
+        }
+        70% {
+          transform: translate(9%, 4%);
+        }
+        90% {
+          transform: translate(-1%, 7%);
+        }
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) translateX(-50%);
+        }
+        50% {
+          transform: translateY(-12px) translateX(-50%);
+        }
+      }
+
+      /* Reveal animations */
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      [data-reveal].visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      [data-reveal-left] {
+        opacity: 0;
+        transform: translateX(-40px);
+        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      [data-reveal-left].visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      [data-reveal-right] {
+        opacity: 0;
+        transform: translateX(40px);
+        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      [data-reveal-right].visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .section-padding {
+          padding: 60px 24px !important;
+        }
+      }
+    </style>
+
+    <script>
+      // IntersectionObserver for reveal animations
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      document
+        .querySelectorAll("[data-reveal], [data-reveal-left], [data-reveal-right]")
+        .forEach((el) => {
+          // Apply stagger delay if specified
+          const delay = el.getAttribute("data-reveal-delay");
+          if (delay) {
+            (el as HTMLElement).style.transitionDelay = delay + "s";
+          }
+          observer.observe(el);
+        });
+    </script>
+  </body>
+</html>

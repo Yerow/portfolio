@@ -1,0 +1,29 @@
+<footer>
+  <span>© 2025 Mohamed. Tous droits réservés.</span>
+  <span>Fait avec <span class="accent">♥</span> et Astro</span>
+</footer>
+
+<style>
+  footer {
+    padding: 40px 60px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    footer {
+      padding: 30px 24px;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+const projects = [
+  {
+    title: "Tropicana UPgrade",
+    tag: "Client — Malaisie",
+    desc: "Campagne digitale temporaire pour Tropicana Corporation Berhad. Mini-jeux interactifs mensuels, système de points et connexion quotidienne, quiz de style, design de pièce virtuelle et concours avec RM140 000 de lots. Site hors ligne depuis la fin de la campagne.",
+    stack: ["Next.js", "Gamification", "API Integration"],
+    link: null,
+    color: "#FF9F43",
+    img: "🏠",
+    isConfidential: false,
+  },
+  {
+    title: "SYL Cup",
+    tag: "Client — Singapour",
+    desc: "Plateforme officielle de la SYL Cup, compétition co-organisée par la Football Association of Singapore (FAS) et Sport Singapore. Fixtures en temps réel, classements, blog et intégration réseaux sociaux.",
+    stack: ["Next.js", "Payload CMS", "PostgreSQL"],
+    link: "https://sylcup.syl.sg",
+    color: "#00E5A0",
+    img: "⚽",
+    isConfidential: false,
+  },
+  {
+    title: "Projets confidentiels",
+    tag: "NDA",
+    desc: "Plusieurs projets réalisés pour des entreprises en France et à l'international, couvrant du développement fullstack au design d'interfaces. Détails disponibles sur demande.",
+    stack: ["Fullstack", "Web Apps", "CMS"],
+    link: null,
+    color: "#8888A0",
+    img: "🔒",
+    isConfidential: true,
+  },
+];
+---
+
+<section id="projets" class="section-padding projects-section">
+  <div class="section-label" data-reveal>Projets sélectionnés</div>
+  <h2 class="section-title" data-reveal data-reveal-delay="0.1">
+    Ce que j'ai <span class="accent">construit</span>
+  </h2>
+
+  <div class="projects-grid">
+    {projects.map((p, i) => (
+      <div
+        class:list={["project-card", { "project-card--confidential": p.isConfidential }]}
+        style={`--project-color: ${p.color};`}
+        data-reveal
+        data-reveal-delay={`${0.1 + i * 0.12}`}
+      >
+        {!p.isConfidential && <div class="project-glow" />}
+        <div class="project-content">
+          <div class="project-header">
+            <span class="project-emoji">{p.img}</span>
+            <span class="project-tag" style={`color: ${p.color}; background: ${p.color}12;`}>
+              {p.tag}
+            </span>
+          </div>
+          <h3 class="project-title">{p.title}</h3>
+          <p class="project-desc">{p.desc}</p>
+          <div class="project-stack">
+            {p.stack.map((s) => (
+              <span class="stack-tag">{s}</span>
+            ))}
+          </div>
+          {p.link && (
+            <a href={p.link} target="_blank" rel="noopener noreferrer" class="project-link" style={`color: ${p.color};`}>
+              Voir le site →
+            </a>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .projects-section {
+    padding: 120px 60px;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 64px;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.4s;
+  }
+
+  .project-card:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--project-color) 40%, transparent);
+  }
+
+  .project-card--confidential {
+    background: transparent;
+    border: 2px dashed rgba(255, 255, 255, 0.12);
+  }
+
+  .project-card--confidential:hover {
+    transform: translateY(-6px);
+    border-color: var(--project-color);
+  }
+
+  .project-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: transparent;
+    filter: blur(40px);
+    transition: background 0.4s;
+    pointer-events: none;
+  }
+
+  .project-card:hover .project-glow {
+    background: color-mix(in srgb, var(--project-color) 6%, transparent);
+  }
+
+  .project-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .project-emoji {
+    font-size: 40px;
+  }
+
+  .project-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .project-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .project-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stack-tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    color: var(--text-secondary);
+  }
+
+  .project-link {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.3s;
+  }
+
+  .project-link:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .projects-section {
+      padding: 60px 24px;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
