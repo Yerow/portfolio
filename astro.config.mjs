@@ -3,7 +3,8 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://mohamedguef.github.io',
+  site: 'https://yerow.github.io',
+  base: '/portfolio',
   integrations: [sitemap()],
   output: 'static',
 });
