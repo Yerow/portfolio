@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local reference files
+CLAUDE.md
+CLAUDE-CODE-PROMPT.md
+portfolio-mockup.jsx
