@@ -1,9 +1,9 @@
 ---
 const stats = [
-  { label: "Projets réalisés", value: "10+", icon: "◈" },
-  { label: "Clients satisfaits", value: "5+", icon: "◇" },
-  { label: "Stack principale", value: "Next.js / Astro", icon: "◆" },
-  { label: "Diplôme", value: "Sept. 2025", icon: "◈" },
+  { label: "Projets réalisés", value: "10+", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>` },
+  { label: "Clients satisfaits", value: "5+", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>` },
+  { label: "Stack principale", value: "Next.js / Astro", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>` },
+  { label: "Diplôme ingé / M2 Info", value: "Sept. 2026", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>` },
 ];
 ---
 
@@ -16,7 +16,7 @@ const stats = [
         <span class="accent">bien faire</span> les choses
       </h2>
       <p class="about-paragraph">
-        Étudiant ingénieur à CPE Lyon, je suis passionné par le web depuis
+        Je suis Mohamed, étudiant ingénieur à CPE Lyon, passionné par le web depuis
         plusieurs années. J'ai eu la chance de travailler sur des projets
         variés, du site vitrine à la plateforme complexe, en freelance comme en
         entreprise.
@@ -33,7 +33,7 @@ const stats = [
         {stats.map((s, i) => (
           <div class:list={["stat-row", { "stat-row--last": i === stats.length - 1 }]}>
             <div class="stat-left">
-              <span class="stat-icon">{s.icon}</span>
+              <span class="stat-icon" set:html={s.icon} />
               <span class="stat-label">{s.label}</span>
             </div>
             <span class="stat-value">{s.value}</span>
@@ -114,7 +114,8 @@ const stats = [
 
   .stat-icon {
     color: var(--accent);
-    font-size: 16px;
+    display: flex;
+    align-items: center;
   }
 
   .stat-label {

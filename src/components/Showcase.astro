@@ -1,0 +1,198 @@
+---
+const demos = [
+  {
+    title: "Flowdeck",
+    tag: "LANDING PAGE SAAS",
+    desc: "Landing page pour un outil de gestion de projet fictif. Animations GSAP, mockups UI en HTML/CSS pur, design system complet.",
+    stack: ["Astro", "GSAP", "ScrollTrigger"],
+    link: "https://demo-saas.yupa.dev",
+    color: "#4F46E5",
+    img: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3"/></svg>`,
+  },
+];
+---
+
+<section id="showcase" class="section-padding showcase-section">
+  <div class="section-label" data-reveal>Showcase</div>
+  <h2 class="section-title" data-reveal data-reveal-delay="0.1">
+    Demos & <span class="accent">experimentations</span>
+  </h2>
+  <p class="section-subtitle" data-reveal data-reveal-delay="0.2">
+    Des sites fictifs pour explorer differentes approches de design et de developpement.
+  </p>
+
+  <div class="showcase-grid">
+    {demos.map((d, i) => (
+      <div
+        class="project-card"
+        style={`--project-color: ${d.color};`}
+        data-reveal
+        data-reveal-delay={`${0.2 + i * 0.12}`}
+      >
+        <div class="project-content">
+          <div class="project-header">
+            <span class="project-emoji" set:html={d.img} />
+            <span class="project-tag" style={`color: ${d.color}; background: ${d.color}12;`}>
+              {d.tag}
+            </span>
+          </div>
+          <h3 class="project-title">{d.title}</h3>
+          <p class="project-desc">{d.desc}</p>
+          <div class="project-stack">
+            {d.stack.map((s) => (
+              <span class="stack-tag">{s}</span>
+            ))}
+          </div>
+          {d.link && (
+            <a href={d.link} target="_blank" rel="noopener noreferrer" class="project-link" style={`color: ${d.color};`}>
+              Voir la demo →
+            </a>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .showcase-section {
+    padding: 120px 60px;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 550px;
+    margin-bottom: 64px;
+  }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+    max-width: 500px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.4s;
+  }
+
+  .project-card:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--project-color) 40%, transparent);
+  }
+
+  .project-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .project-emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--project-color);
+  }
+
+  .project-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .project-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .project-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stack-tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    color: var(--text-secondary);
+  }
+
+  .project-link {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.3s;
+  }
+
+  .project-link:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .showcase-section {
+      padding: 60px 24px;
+    }
+
+    .showcase-grid {
+      grid-template-columns: 1fr;
+      max-width: none;
+    }
+  }
+</style>
