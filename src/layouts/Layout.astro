@@ -1,12 +1,14 @@
 ---
+import CommandPalette from "../components/CommandPalette.astro";
+
 interface Props {
   title?: string;
   description?: string;
 }
 
 const {
-  title = "Yupa — Développeur Web Fullstack",
-  description = "Yupa — Développeur web fullstack freelance basé à Lyon. Création de sites et applications web modernes.",
+  title = "Yupa · Mohamed, développeur web fullstack",
+  description = "Mohamed, développeur web fullstack à Lyon, étudiant ingénieur à CPE Lyon. SYL Cup à Singapour, Tropicana en Malaisie, et quelques démos.",
 } = Astro.props;
 ---
 
@@ -19,29 +21,75 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#F1EFEA" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131215" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script is:inline>
+      // Applique le thème avant le premier rendu pour éviter le flash
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <div class="grain"></div>
     <slot />
+    <CommandPalette />
 
     <style is:global>
       :root {
-        --bg: #0a0a0f;
-        --surface: #12121a;
-        --accent: #00e5a0;
-        --accent-blue: #7b8cff;
-        --text-primary: #f0f0f5;
-        --text-secondary: #8888a0;
-        --font-display: "Syne", sans-serif;
-        --font-body: "DM Sans", sans-serif;
+        --bg: #f1efea;
+        --surface: #fbfaf8;
+        --surface-2: #e8e5df;
+        --line: rgba(23, 22, 26, 0.11);
+        --line-strong: rgba(23, 22, 26, 0.22);
+        --accent: #c41e3a;
+        --on-accent: #ffffff;
+        --text-primary: #17161a;
+        --text-secondary: #5c5961;
+        --font-display: "Syne", "Helvetica Neue", Arial, sans-serif;
+        --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --gutter: 60px;
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #131215;
+          --surface: #1c1b1f;
+          --surface-2: #26252a;
+          --line: rgba(241, 239, 243, 0.1);
+          --line-strong: rgba(241, 239, 243, 0.22);
+          --accent: #f0485f;
+          --on-accent: #131215;
+          --text-primary: #f1eff3;
+          --text-secondary: #a19da8;
+          color-scheme: dark;
+        }
+      }
+
+      :root[data-theme="dark"] {
+        --bg: #131215;
+        --surface: #1c1b1f;
+        --surface-2: #26252a;
+        --line: rgba(241, 239, 243, 0.1);
+        --line-strong: rgba(241, 239, 243, 0.22);
+        --accent: #f0485f;
+        --on-accent: #131215;
+        --text-primary: #f1eff3;
+        --text-secondary: #a19da8;
+        color-scheme: dark;
       }
 
       *,
@@ -54,6 +102,7 @@ const {
 
       html {
         scroll-behavior: smooth;
+        scroll-padding-top: 80px;
       }
 
       body {
@@ -62,6 +111,7 @@ const {
         font-family: var(--font-body);
         min-height: 100vh;
         overflow-x: hidden;
+        transition: background 0.3s, color 0.3s;
       }
 
       a {
@@ -69,113 +119,108 @@ const {
         text-decoration: none;
       }
 
+      button {
+        font: inherit;
+        color: inherit;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
       ::selection {
         background: var(--accent);
-        color: var(--bg);
+        color: var(--on-accent);
       }
 
-      /* Grain overlay */
-      .grain::before {
+      .accent {
+        color: var(--accent);
+      }
+
+      .section-padding {
+        padding: 120px var(--gutter);
+      }
+
+      /* En-tête de section : une ligne mono discrète au lieu des majuscules espacées */
+      .section-label {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-label::before {
         content: "";
-        position: fixed;
-        top: -50%;
-        left: -50%;
-        right: -50%;
-        bottom: -50%;
-        width: 200%;
-        height: 200%;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-        animation: grain 8s steps(10) infinite;
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 0.5;
+        width: 18px;
+        height: 1px;
+        background: var(--accent);
       }
 
-      @keyframes grain {
-        0%,
-        100% {
-          transform: translate(0, 0);
-        }
-        10% {
-          transform: translate(-5%, -10%);
-        }
-        30% {
-          transform: translate(3%, -15%);
-        }
-        50% {
-          transform: translate(12%, 9%);
-        }
-        70% {
-          transform: translate(9%, 4%);
-        }
-        90% {
-          transform: translate(-1%, 7%);
-        }
+      .section-title {
+        font-family: var(--font-display);
+        font-size: clamp(34px, 5vw, 56px);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        text-wrap: balance;
       }
 
-      @keyframes blink {
-        50% {
-          opacity: 0;
-        }
+      kbd {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        padding: 1px 5px;
+        border: 1px solid var(--line-strong);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        color: var(--text-secondary);
       }
 
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0) translateX(-50%);
-        }
-        50% {
-          transform: translateY(-12px) translateX(-50%);
-        }
-      }
-
-      /* Reveal animations */
-      [data-reveal] {
+      /* Apparition au scroll : discrète, et visible par défaut sans JS */
+      .js [data-reveal] {
         opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(16px);
+        transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
       }
 
-      [data-reveal].visible {
+      .js [data-reveal].visible {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
       }
 
-      [data-reveal-left] {
-        opacity: 0;
-        transform: translateX(-40px);
-        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-
-      [data-reveal-left].visible {
-        opacity: 1;
-        transform: translateX(0);
-      }
-
-      [data-reveal-right] {
-        opacity: 0;
-        transform: translateX(40px);
-        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-          transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-
-      [data-reveal-right].visible {
-        opacity: 1;
-        transform: translateX(0);
-      }
-
-      /* Responsive */
       @media (max-width: 768px) {
+        :root {
+          --gutter: 20px;
+        }
         .section-padding {
-          padding: 60px 24px !important;
+          padding: 72px var(--gutter);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+        .js [data-reveal] {
+          opacity: 1;
+          transform: none;
         }
       }
     </style>
 
     <script>
-      // IntersectionObserver for reveal animations
+      document.documentElement.classList.add("js");
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -185,19 +230,14 @@ const {
             }
           });
         },
-        { threshold: 0.15 }
+        { threshold: 0.1 }
       );
 
-      document
-        .querySelectorAll("[data-reveal], [data-reveal-left], [data-reveal-right]")
-        .forEach((el) => {
-          // Apply stagger delay if specified
-          const delay = el.getAttribute("data-reveal-delay");
-          if (delay) {
-            (el as HTMLElement).style.transitionDelay = delay + "s";
-          }
-          observer.observe(el);
-        });
+      document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
+        const delay = el.dataset.revealDelay;
+        if (delay) el.style.transitionDelay = delay + "s";
+        observer.observe(el);
+      });
     </script>
   </body>
 </html>

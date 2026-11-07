@@ -1,4 +1,6 @@
 ---
+import { projectTechs } from "../data/projects";
+
 // Simple monochrome icons for each tech — stroke-based, consistent style
 const icons: Record<string, string> = {
   // Frontend
@@ -67,26 +69,37 @@ const categories = [
 ---
 
 <section id="competences" class="section-padding skills-section">
-  <div class="section-label" data-reveal>Compétences</div>
-  <h2 class="section-title" data-reveal data-reveal-delay="0.1">
-    Ma <span class="accent">stack</span> technique
-  </h2>
+  <div class="skills-head">
+    <div class="section-label" data-reveal>stack</div>
+    <h2 class="section-title" data-reveal>Avec quoi je travaille</h2>
+    <p class="skills-hint" data-reveal>Les technos soulignées sont cliquables : elles filtrent les projets qui les utilisent.</p>
+  </div>
 
   <div class="skills-grid">
     {categories.map((cat, i) => (
-      <div class="skill-card" data-reveal data-reveal-delay={`${0.1 + i * 0.1}`}>
-        <div class="skill-card-header">
-          <span class="skill-card-icon" set:html={cat.icon} />
-          <h3 class="skill-card-title">{cat.title}</h3>
-        </div>
-        <div class="skill-tags">
+      <div class="skill-col" data-reveal data-reveal-delay={`${i * 0.06}`}>
+        <h3 class="skill-col-title">
+          <span class="skill-col-icon" set:html={cat.icon} />
+          {cat.title}
+        </h3>
+        <ul class="skill-list">
           {cat.skills.map((s) => (
-            <span class="skill-tag">
-              <span class="skill-tag-icon" set:html={icons[s] || ""} />
-              {s}
-            </span>
+            <li>
+              {projectTechs.includes(s) ? (
+                <button type="button" class="skill skill--link" data-filter-tech={s}>
+                  <span class="skill-icon" set:html={icons[s] || ""} />
+                  <span class="skill-name">{s}</span>
+                  <span class="skill-go" aria-hidden="true">→</span>
+                </button>
+              ) : (
+                <span class="skill">
+                  <span class="skill-icon" set:html={icons[s] || ""} />
+                  <span class="skill-name">{s}</span>
+                </span>
+              )}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     ))}
   </div>
@@ -94,118 +107,111 @@ const categories = [
 
 <style>
   .skills-section {
-    padding: 120px 60px;
+    border-top: 1px solid var(--line);
   }
 
-  .section-label {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+  .skills-head {
+    margin-bottom: 48px;
   }
 
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4vw, 48px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 56px;
-  }
-
-  .accent {
-    color: var(--accent);
+  .skills-hint {
+    margin-top: 14px;
+    color: var(--text-secondary);
+    font-size: 15px;
   }
 
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
   }
 
-  .skill-card {
-    background: var(--surface);
-    border-radius: 16px;
-    padding: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: border-color 0.3s, transform 0.3s;
-  }
-
-  .skill-card:hover {
-    border-color: rgba(0, 229, 160, 0.15);
-    transform: translateY(-3px);
-  }
-
-  .skill-card-header {
+  .skill-col-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--line-strong);
   }
 
-  .skill-card-icon {
+  .skill-col-icon {
     color: var(--accent);
     display: flex;
-    align-items: center;
   }
 
-  .skill-card-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  .skill-list {
+    list-style: none;
   }
 
-  .skill-tags {
+  .skill {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
-  }
-
-  .skill-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 8px;
+    padding: 8px 0;
+    font-size: 15px;
     color: var(--text-secondary);
-    transition: color 0.3s, background 0.3s, border-color 0.3s;
+    background: none;
+    border: 0;
+    text-align: left;
   }
 
-  .skill-tag-icon {
+  .skill-icon {
     display: flex;
-    align-items: center;
-    opacity: 0.5;
-    transition: opacity 0.3s;
+    opacity: 0.6;
   }
 
-  .skill-card:hover .skill-tag {
+  .skill--link {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
   }
 
-  .skill-card:hover .skill-tag-icon {
-    opacity: 0.85;
+  .skill--link .skill-name {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
   }
 
-  @media (max-width: 768px) {
-    .skills-section {
-      padding: 60px 24px;
-    }
+  .skill-go {
+    margin-left: auto;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s, transform 0.2s var(--ease);
+  }
 
+  .skill--link:hover .skill-go,
+  .skill--link:focus-visible .skill-go {
+    opacity: 1;
+    transform: none;
+  }
+
+  .skill--link:hover .skill-name {
+    text-decoration-color: var(--accent);
+  }
+
+  @media (max-width: 1000px) {
     .skills-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
-    .skill-card {
-      padding: 24px;
+  @media (max-width: 560px) {
+    .skills-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
+
+<script>
+  import { filterProjects } from "../scripts/site";
+
+  document.querySelectorAll<HTMLButtonElement>("[data-filter-tech]").forEach((b) =>
+    b.addEventListener("click", () => filterProjects(b.dataset.filterTech!, true))
+  );
+</script>
