@@ -1,141 +1,101 @@
 ---
-const stats = [
-  { label: "Projets réalisés", value: "10+", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>` },
-  { label: "Clients satisfaits", value: "5+", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>` },
-  { label: "Stack principale", value: "Next.js / Astro", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>` },
-  { label: "Diplôme ingé / M2 Info", value: "Sept. 2026", icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>` },
+const facts = [
+  { label: "Projets réalisés", value: "10+" },
+  { label: "Clients en", value: "France, Singapour, Malaisie" },
+  { label: "Stack principale", value: "Next.js, Astro" },
+  { label: "Diplôme ingé / M2 info", value: "Sept. 2026" },
 ];
 ---
 
 <section id="propos" class="section-padding about-section">
   <div class="about-grid">
-    <div class="about-text" data-reveal-left>
-      <div class="section-label">À propos</div>
-      <h2 class="about-title">
-        Un dev qui aime<br />
-        <span class="accent">bien faire</span> les choses
-      </h2>
-      <p class="about-paragraph">
-        Je suis Mohamed, étudiant ingénieur à CPE Lyon, passionné par le web depuis
-        plusieurs années. J'ai eu la chance de travailler sur des projets
-        variés, du site vitrine à la plateforme complexe, en freelance comme en
-        entreprise.
+    <div class="about-text" data-reveal>
+      <div class="section-label">à propos</div>
+      <h2 class="section-title">De la maquette à la prod, <span class="accent">un seul interlocuteur.</span></h2>
+      <p>
+        Je suis étudiant ingénieur à CPE Lyon et je fais du web depuis plusieurs années, à côté des cours. J'ai travaillé
+        en entreprise et sur des projets pour des clients en France et en Asie du Sud-Est, du site vitrine à la plateforme
+        avec back-office.
       </p>
-      <p class="about-paragraph">
-        Mon approche : écouter le besoin, proposer des solutions modernes et
-        robustes, et livrer un produit qui fait vraiment la différence. Je
-        maîtrise toute la chaîne, du design au déploiement.
+      <p>
+        J'aime m'occuper de tout le projet : la maquette, le front, l'API, la base de données et le déploiement. Comme ça,
+        personne ne se renvoie la balle quand quelque chose casse.
       </p>
     </div>
 
-    <div class="about-stats-wrapper" data-reveal-right data-reveal-delay="0.2">
-      <div class="stats-card">
-        {stats.map((s, i) => (
-          <div class:list={["stat-row", { "stat-row--last": i === stats.length - 1 }]}>
-            <div class="stat-left">
-              <span class="stat-icon" set:html={s.icon} />
-              <span class="stat-label">{s.label}</span>
-            </div>
-            <span class="stat-value">{s.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <dl class="facts" data-reveal data-reveal-delay="0.1">
+      {facts.map((f) => (
+        <div class="fact">
+          <dt>{f.label}</dt>
+          <dd>{f.value}</dd>
+        </div>
+      ))}
+    </dl>
   </div>
 </section>
 
 <style>
   .about-section {
-    padding: 120px 60px;
+    border-top: 1px solid var(--line);
   }
 
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: 80px;
-    align-items: center;
-    max-width: 1100px;
+    align-items: start;
+    max-width: 1200px;
   }
 
-  .section-label {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+  .about-text {
+    display: grid;
+    gap: 18px;
   }
 
-  .about-title {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4vw, 48px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    line-height: 1.15;
+  .about-text .section-title {
+    margin-bottom: 8px;
   }
 
-  .accent {
-    color: var(--accent);
-  }
-
-  .about-paragraph {
-    font-size: 15px;
+  .about-text p {
+    font-size: 16px;
     line-height: 1.8;
     color: var(--text-secondary);
-    margin-bottom: 16px;
+    max-width: 60ch;
   }
 
-  .stats-card {
-    background: var(--surface);
-    border-radius: 20px;
-    padding: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+  .facts {
+    display: grid;
   }
 
-  .stat-row {
+  .fact {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: baseline;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
   }
 
-  .stat-row--last {
-    border-bottom: none;
+  .fact:first-child {
+    border-top: 1px solid var(--line);
   }
 
-  .stat-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .stat-icon {
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-  }
-
-  .stat-label {
-    font-size: 14px;
+  .fact dt {
+    font-family: var(--font-mono);
+    font-size: 13px;
     color: var(--text-secondary);
   }
 
-  .stat-value {
+  .fact dd {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 18px;
+    text-align: right;
   }
 
   @media (max-width: 768px) {
-    .about-section {
-      padding: 60px 24px;
-    }
-
     .about-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 40px;
     }
   }

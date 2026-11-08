@@ -1,234 +1,434 @@
 ---
-const projects = [
-  {
-    title: "Tropicana UPgrade",
-    tag: "Client — Malaisie",
-    desc: "Campagne digitale temporaire pour Tropicana Corporation Berhad. Mini-jeux interactifs mensuels, système de points et connexion quotidienne, quiz de style, design de pièce virtuelle et concours avec RM140 000 de lots. Site hors ligne depuis la fin de la campagne.",
-    stack: ["Next.js", "Gamification", "API Integration"],
-    link: null,
-    color: "#FF9F43",
-    img: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-    isConfidential: false,
-  },
-  {
-    title: "SYL Cup",
-    tag: "Client — Singapour",
-    desc: "Plateforme officielle de la SYL Cup, compétition co-organisée par la Football Association of Singapore (FAS) et Sport Singapore. Fixtures en temps réel, classements, blog et intégration réseaux sociaux.",
-    stack: ["Next.js", "Payload CMS", "PostgreSQL"],
-    link: "https://sylcup.syl.sg",
-    color: "#00E5A0",
-    img: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/><path d="M2 12h20"/></svg>`,
-    isConfidential: false,
-  },
-  {
-    title: "Projets confidentiels",
-    tag: "NDA",
-    desc: "Plusieurs projets réalisés pour des entreprises en France et à l'international, couvrant du développement fullstack au design d'interfaces. Détails disponibles sur demande.",
-    stack: ["Fullstack", "Web Apps", "CMS"],
-    link: null,
-    color: "#8888A0",
-    img: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
-    isConfidential: true,
-  },
-];
+import { projects, projectTechs } from "../data/projects";
+
+const host = (url: string) => new URL(url).host;
 ---
 
 <section id="projets" class="section-padding projects-section">
-  <div class="section-label" data-reveal>Projets sélectionnés</div>
-  <h2 class="section-title" data-reveal data-reveal-delay="0.1">
-    Ce que j'ai <span class="accent">construit</span>
-  </h2>
+  <div class="projects-head">
+    <div>
+      <div class="section-label" data-reveal>projets</div>
+      <h2 class="section-title" data-reveal>Ce que j'ai construit</h2>
+    </div>
+    <p class="projects-intro" data-reveal>
+      Deux projets clients, deux démos que je fais pour tester des idées de design. Filtre par techno pour voir où je l'ai utilisée.
+    </p>
+  </div>
 
-  <div class="projects-grid">
-    {projects.map((p, i) => (
-      <div
-        class:list={["project-card", { "project-card--confidential": p.isConfidential }]}
+  <div class="filters" role="group" aria-label="Filtrer par techno" data-reveal>
+    <button type="button" class="filter" data-tech="" aria-pressed="true">Tout</button>
+    {projectTechs.map((t) => (
+      <button type="button" class="filter" data-tech={t} aria-pressed="false">{t}</button>
+    ))}
+    <span class="filter-count" id="filter-count" aria-live="polite"></span>
+  </div>
+
+  <ul class="projects-grid">
+    {projects.map((p) => (
+      <li
+        class:list={["project", `project--${p.kind}`]}
         style={`--project-color: ${p.color};`}
-        data-reveal
-        data-reveal-delay={`${0.1 + i * 0.12}`}
+        data-stack={p.stack.join("|")}
+        data-kind={p.kind}
+        data-preview={p.preview ?? ""}
+        data-host={p.link ? host(p.link) : ""}
+        data-title={p.title}
       >
-        {!p.isConfidential && <div class="project-glow" />}
-        <div class="project-content">
-          <div class="project-header">
-            <span class="project-emoji" set:html={p.img} />
-            <span class="project-tag" style={`color: ${p.color}; background: ${p.color}12;`}>
-              {p.tag}
-            </span>
-          </div>
-          <h3 class="project-title">{p.title}</h3>
-          <p class="project-desc">{p.desc}</p>
-          <div class="project-stack">
-            {p.stack.map((s) => (
-              <span class="stack-tag">{s}</span>
-            ))}
-          </div>
-          {p.link && (
-            <a href={p.link} target="_blank" rel="noopener noreferrer" class="project-link" style={`color: ${p.color};`}>
-              Voir le site →
-            </a>
+        <div class="project-top">
+          <span class="project-meta">{p.meta}</span>
+          {p.kind === "nda" && (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           )}
         </div>
-      </div>
+        <h3 class="project-title">
+          {p.link ? (
+            <a href={p.link} target="_blank" rel="noopener noreferrer" class="project-link">
+              {p.title}
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            p.title
+          )}
+        </h3>
+        <p class="project-desc">{p.desc}</p>
+        {p.stack.length > 0 && (
+          <ul class="project-stack" aria-label="Stack">
+            {p.stack.map((s) => <li>{s}</li>)}
+          </ul>
+        )}
+        {p.link && <span class="project-host">{host(p.link)}</span>}
+        {!p.link && p.kind === "client" && <span class="project-host">site hors ligne</span>}
+      </li>
     ))}
+  </ul>
+
+  <div class="cursor-preview" id="cursor-preview" aria-hidden="true">
+    <div class="cp-bar"><i></i><i></i><i></i><span class="cp-host"></span></div>
+    <div class="cp-body">
+      <img alt="" class="cp-img" />
+      <span class="cp-title"></span>
+    </div>
   </div>
 </section>
 
 <style>
-  .projects-section {
-    padding: 120px 60px;
-    position: relative;
+  .projects-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: end;
+    margin-bottom: 40px;
   }
 
-  .section-label {
-    font-family: var(--font-body);
+  .projects-intro {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 46ch;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+
+  .filter {
     font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+    padding: 7px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
 
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 64px;
+  .filter:hover {
+    color: var(--text-primary);
   }
 
-  .accent {
-    color: var(--accent);
+  .filter[aria-pressed="true"] {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: var(--bg);
+  }
+
+  .filter-count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: 8px;
   }
 
   .projects-grid {
+    list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
   }
 
-  .project-card {
+  /* Les deux projets clients prennent plus de place que les démos */
+  .project--client {
+    grid-column: span 3;
+  }
+
+  .project--demo,
+  .project--nda {
+    grid-column: span 2;
+  }
+
+  .project {
+    --tint: color-mix(in srgb, var(--project-color) 75%, var(--text-primary));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px;
+    border-radius: 14px;
     background: var(--surface);
-    border-radius: 16px;
-    padding: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.4s;
+    border: 1px solid var(--line);
+    transition: border-color 0.3s, opacity 0.3s, transform 0.4s var(--ease), background 0.3s;
   }
 
-  .project-card:hover {
-    transform: translateY(-6px);
-    border-color: color-mix(in srgb, var(--project-color) 40%, transparent);
+  .project--client {
+    padding: 36px;
   }
 
-  .project-card--confidential {
+  .project--nda {
     background: transparent;
-    border: 2px dashed rgba(255, 255, 255, 0.12);
+    border-style: dashed;
+    border-color: var(--line-strong);
   }
 
-  .project-card--confidential:hover {
-    transform: translateY(-6px);
-    border-color: var(--project-color);
+  .project:hover {
+    border-color: color-mix(in srgb, var(--project-color) 55%, transparent);
+    background: color-mix(in srgb, var(--project-color) 5%, var(--surface));
   }
 
-  .project-glow {
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+  .project--nda:hover {
     background: transparent;
-    filter: blur(40px);
-    transition: background 0.4s;
-    pointer-events: none;
   }
 
-  .project-card:hover .project-glow {
-    background: color-mix(in srgb, var(--project-color) 6%, transparent);
+  .project.is-dim {
+    opacity: 0.28;
   }
 
-  .project-content {
-    position: relative;
-    z-index: 1;
+  .project.is-match {
+    border-color: color-mix(in srgb, var(--project-color) 55%, transparent);
   }
 
-  .project-header {
+  .project-top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-  }
-
-  .project-emoji {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--project-color);
+    color: var(--text-secondary);
   }
 
-  .project-tag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
+  .project-meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--tint);
   }
 
   .project-title {
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
-    margin-bottom: 12px;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 
-  .project-desc {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-  }
-
-  .project-stack {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .stack-tag {
-    font-size: 12px;
-    font-weight: 500;
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    color: var(--text-secondary);
+  .project--client .project-title {
+    font-size: clamp(28px, 3vw, 38px);
   }
 
   .project-link {
-    margin-top: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: opacity 0.3s;
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
   }
 
-  .project-link:hover {
-    opacity: 0.8;
+  /* Toute la carte est cliquable quand il y a un lien */
+  .project-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .arrow {
+    font-size: 0.7em;
+    color: var(--tint);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .project:hover .arrow {
+    transform: translate(3px, -3px);
+  }
+
+  .project-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 62ch;
+  }
+
+  .project-stack {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 6px;
+  }
+
+  .project-stack li {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    color: var(--text-secondary);
+  }
+
+  .project-host {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  /* Aperçu qui suit la souris */
+  .cursor-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(-999px, -999px, 0) scale(0.92);
+    transition: opacity 0.2s, scale 0.25s var(--ease);
+  }
+
+  .cursor-preview.show {
+    opacity: 1;
+  }
+
+  .cp-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cp-bar i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .cp-host {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-left: 8px;
+  }
+
+  .cp-body {
+    aspect-ratio: 16 / 10;
+    display: grid;
+    place-items: center;
+    background: var(--cp-color, var(--accent));
+    position: relative;
+  }
+
+  .cp-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .cp-img:not([src]),
+  .cp-img[src=""] {
+    display: none;
+  }
+
+  .cp-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+
+  @media (max-width: 1000px) {
+    .project--client,
+    .project--demo,
+    .project--nda {
+      grid-column: span 3;
+    }
+    .project--nda {
+      grid-column: span 6;
+    }
   }
 
   @media (max-width: 768px) {
-    .projects-section {
-      padding: 60px 24px;
+    .projects-head {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
     }
 
     .projects-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .project--client,
+    .project--demo,
+    .project--nda {
+      grid-column: auto;
+      padding: 24px;
+    }
+
+    .cursor-preview {
+      display: none;
     }
   }
 </style>
+
+<script>
+  const cards = [...document.querySelectorAll<HTMLElement>(".project")];
+  const filters = [...document.querySelectorAll<HTMLButtonElement>(".filter")];
+  const count = document.getElementById("filter-count")!;
+
+  function apply(tech: string | null) {
+    filters.forEach((f) => f.setAttribute("aria-pressed", String((f.dataset.tech || null) === tech)));
+    let n = 0;
+    cards.forEach((c) => {
+      const stack = c.dataset.stack ? c.dataset.stack.split("|") : [];
+      const match = !tech || stack.includes(tech);
+      if (tech && match) n++;
+      c.classList.toggle("is-dim", !!tech && !match);
+      c.classList.toggle("is-match", !!tech && match);
+    });
+    count.textContent = tech ? `${n} projet${n > 1 ? "s" : ""} avec ${tech}` : "";
+  }
+
+  filters.forEach((f) => f.addEventListener("click", () => apply(f.dataset.tech || null)));
+  addEventListener("filter-tech", (e) => apply((e as CustomEvent<string | null>).detail));
+
+  // Aperçu au survol, uniquement avec une vraie souris
+  const preview = document.getElementById("cursor-preview")!;
+  const img = preview.querySelector<HTMLImageElement>(".cp-img")!;
+  const hostEl = preview.querySelector(".cp-host")!;
+  const titleEl = preview.querySelector(".cp-title")!;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (finePointer) {
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0, active = false;
+
+    const loop = () => {
+      cx += (x - cx) * (reduce ? 1 : 0.18);
+      cy += (y - cy) * (reduce ? 1 : 0.18);
+      preview.style.transform = `translate3d(${cx + 24}px, ${cy - 90}px, 0) scale(${active ? 1 : 0.92})`;
+      raf = active || Math.abs(x - cx) > 0.5 ? requestAnimationFrame(loop) : 0;
+    };
+
+    cards.forEach((card) => {
+      if (!card.dataset.host) return;
+      card.addEventListener("mouseenter", (e) => {
+        hostEl.textContent = card.dataset.host!;
+        titleEl.textContent = card.dataset.preview ? "" : card.dataset.title!;
+        if (card.dataset.preview) img.src = card.dataset.preview;
+        else img.removeAttribute("src");
+        preview.style.setProperty("--cp-color", getComputedStyle(card).getPropertyValue("--project-color"));
+        x = cx = e.clientX;
+        y = cy = e.clientY;
+        active = true;
+        preview.classList.add("show");
+        if (!raf) raf = requestAnimationFrame(loop);
+      });
+      card.addEventListener("mousemove", (e) => {
+        x = e.clientX;
+        y = e.clientY;
+      });
+      card.addEventListener("mouseleave", () => {
+        active = false;
+        preview.classList.remove("show");
+      });
+    });
+  }
+</script>

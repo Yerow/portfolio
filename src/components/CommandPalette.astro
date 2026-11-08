@@ -1,0 +1,333 @@
+---
+import { projects, projectTechs, email } from "../data/projects";
+
+type Cmd = { id: string; label: string; group: string; hint?: string; keywords?: string };
+
+const commands: Cmd[] = [
+  { id: "go:projets", label: "Projets", group: "Aller à", keywords: "travaux realisations" },
+  { id: "go:propos", label: "À propos", group: "Aller à", keywords: "about moi" },
+  { id: "go:competences", label: "Stack", group: "Aller à", keywords: "competences skills technos" },
+  { id: "go:contact", label: "Contact", group: "Aller à", keywords: "mail ecrire" },
+  { id: "copy-email", label: "Copier l'adresse email", group: "Actions", hint: email, keywords: "mail contact" },
+  { id: "theme", label: "Changer de thème", group: "Actions", hint: "clair / sombre", keywords: "dark light sombre clair mode" },
+  ...projects
+    .filter((p) => p.link)
+    .map((p) => ({ id: `open:${p.link}`, label: `Ouvrir ${p.title}`, group: "Projets", hint: new URL(p.link!).host })),
+  ...projectTechs.map((t) => ({ id: `filter:${t}`, label: `Projets avec ${t}`, group: "Filtrer", keywords: "filtre techno" })),
+  { id: "open:https://github.com/Yerow", label: "GitHub", group: "Liens", hint: "github.com/Yerow" },
+  { id: "open:https://www.linkedin.com/in/mohamed-gueffaf-8104191b9/", label: "LinkedIn", group: "Liens" },
+];
+---
+
+<div class="palette" id="palette" hidden>
+  <div class="palette-backdrop" data-close-palette></div>
+  <div class="palette-box" role="dialog" aria-modal="true" aria-label="Palette de commandes">
+    <div class="palette-input-row">
+      <span class="palette-prompt" aria-hidden="true">›</span>
+      <input
+        id="palette-input"
+        type="text"
+        placeholder="Où aller, quoi faire…"
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="palette-list"
+        aria-autocomplete="list"
+      />
+      <kbd>Échap</kbd>
+    </div>
+    <ul class="palette-list" id="palette-list" role="listbox">
+      {commands.map((c) => (
+        <li
+          role="option"
+          class="palette-item"
+          id={`cmd-${c.id.replace(/[^a-z0-9]/gi, "-")}`}
+          data-cmd={c.id}
+          data-group={c.group}
+          data-search={`${c.label} ${c.group} ${c.keywords ?? ""} ${c.hint ?? ""}`.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")}
+          aria-selected="false"
+        >
+          <span class="palette-group">{c.group}</span>
+          <span class="palette-label">{c.label}</span>
+          {c.hint && <span class="palette-hint">{c.hint}</span>}
+        </li>
+      ))}
+    </ul>
+    <p class="palette-empty" id="palette-empty" hidden>Rien ne correspond.</p>
+    <div class="palette-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> naviguer</span><span><kbd>Entrée</kbd> valider</span></div>
+  </div>
+</div>
+
+<style is:global>
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    z-index: 300;
+    transform: translate(-50%, 16px);
+    opacity: 0;
+    pointer-events: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--text-primary);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    transition: opacity 0.2s, transform 0.3s var(--ease);
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>
+
+<style>
+  .palette {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    padding: 14vh 16px 16px;
+  }
+
+  .palette[hidden] {
+    display: none;
+  }
+
+  .palette-backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .palette-box {
+    position: relative;
+    width: min(560px, 100%);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    animation: pop 0.22s var(--ease);
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+  }
+
+  .palette-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .palette-prompt {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 18px;
+  }
+
+  #palette-input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  #palette-input::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .palette-list {
+    list-style: none;
+    max-height: min(360px, 50vh);
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  .palette-item {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .palette-item[hidden] {
+    display: none;
+  }
+
+  .palette-item[aria-selected="true"] {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .palette-item[aria-selected="true"] .palette-label {
+    color: var(--accent);
+  }
+
+  .palette-group {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .palette-label {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .palette-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .palette-empty {
+    padding: 20px 16px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .palette-foot {
+    display: flex;
+    gap: 18px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 560px) {
+    .palette-item {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
+    .palette-hint,
+    .palette-foot {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { copyText, filterProjects, toast, toggleTheme } from "../scripts/site";
+  import { email } from "../data/projects";
+
+  // Copie de l'email, partout où un bouton [data-copy-email] existe
+  async function copyEmail(btn?: HTMLElement) {
+    const ok = await copyText(email);
+    toast(ok ? "Adresse copiée" : email);
+    const label = btn?.querySelector<HTMLElement>("[data-copy-label]");
+    if (label && ok) {
+      label.textContent = "Copié";
+      setTimeout(() => (label.textContent = email), 1400);
+    }
+  }
+  document.querySelectorAll<HTMLElement>("[data-copy-email]").forEach((b) => b.addEventListener("click", () => copyEmail(b)));
+
+  // Palette
+  const root = document.getElementById("palette")!;
+  const input = document.getElementById("palette-input") as HTMLInputElement;
+  const items = [...root.querySelectorAll<HTMLLIElement>(".palette-item")];
+  const empty = document.getElementById("palette-empty")!;
+  let visible: HTMLLIElement[] = items;
+  let index = 0;
+  let lastFocus: Element | null = null;
+
+  const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+  function select(i: number) {
+    if (!visible.length) return;
+    index = (i + visible.length) % visible.length;
+    items.forEach((it) => it.setAttribute("aria-selected", "false"));
+    const cur = visible[index];
+    cur.setAttribute("aria-selected", "true");
+    input.setAttribute("aria-activedescendant", cur.id);
+    cur.scrollIntoView({ block: "nearest" });
+  }
+
+  function search() {
+    const terms = norm(input.value).split(/\s+/).filter(Boolean);
+    visible = items.filter((it) => {
+      const ok = terms.every((t) => it.dataset.search!.includes(t));
+      it.hidden = !ok;
+      return ok;
+    });
+    empty.hidden = visible.length > 0;
+    select(0);
+  }
+
+  function open() {
+    lastFocus = document.activeElement;
+    root.hidden = false;
+    input.value = "";
+    search();
+    input.focus();
+  }
+
+  function close() {
+    root.hidden = true;
+    (lastFocus as HTMLElement | null)?.focus?.();
+  }
+
+  function run(cmd: string) {
+    close();
+    const [kind, ...rest] = cmd.split(":");
+    const arg = rest.join(":");
+    if (kind === "go") document.getElementById(arg)?.scrollIntoView({ behavior: "smooth" });
+    else if (kind === "open") window.open(arg, "_blank", "noopener");
+    else if (kind === "filter") filterProjects(arg, true);
+    else if (kind === "theme") toggleTheme();
+    else if (kind === "copy-email") copyEmail();
+  }
+
+  input.addEventListener("input", search);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") (e.preventDefault(), select(index + 1));
+    else if (e.key === "ArrowUp") (e.preventDefault(), select(index - 1));
+    else if (e.key === "Enter" && visible[index]) (e.preventDefault(), run(visible[index].dataset.cmd!));
+    else if (e.key === "Tab") e.preventDefault();
+  });
+  items.forEach((it) => {
+    it.addEventListener("click", () => run(it.dataset.cmd!));
+    it.addEventListener("mousemove", () => {
+      const i = visible.indexOf(it);
+      if (i !== index) select(i);
+    });
+  });
+  root.querySelector("[data-close-palette]")!.addEventListener("click", close);
+
+  addEventListener("keydown", (e) => {
+    const typing = (e.target as HTMLElement).closest("input, textarea, [contenteditable]");
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      root.hidden ? open() : close();
+    } else if (e.key === "Escape" && !root.hidden) {
+      close();
+    } else if (e.key === "/" && root.hidden && !typing) {
+      e.preventDefault();
+      open();
+    }
+  });
+  document.querySelectorAll("[data-open-palette]").forEach((b) => b.addEventListener("click", open));
+</script>
